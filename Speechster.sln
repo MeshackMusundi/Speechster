@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speechster.Services", "Speechster.Services\Speechster.Services.csproj", "{0B3D480A-40CB-4405-B3BA-8A7E6F67FF29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speechster.Console", "Speechster.Console\Speechster.Console.csproj", "{707F245E-E212-4566-9279-80C5EDBB8586}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B3D480A-40CB-4405-B3BA-8A7E6F67FF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3D480A-40CB-4405-B3BA-8A7E6F67FF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B3D480A-40CB-4405-B3BA-8A7E6F67FF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B3D480A-40CB-4405-B3BA-8A7E6F67FF29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{707F245E-E212-4566-9279-80C5EDBB8586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{707F245E-E212-4566-9279-80C5EDBB8586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{707F245E-E212-4566-9279-80C5EDBB8586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{707F245E-E212-4566-9279-80C5EDBB8586}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08EB9279-BCB3-45F2-AFD7-47DF0C1C58BC}
+	EndGlobalSection
+EndGlobal
