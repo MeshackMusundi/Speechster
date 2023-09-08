@@ -73,10 +73,10 @@ public sealed class SpeechService : ISpeechService, IDisposable
             }
 
             previousWords = spokenWords
-            .ToLower()
-            .Trim()
-            .Replace(",", string.Empty)
-            .Replace(".", string.Empty);
+                .ToLower()
+                .Trim()
+                .Replace(",", string.Empty)
+                .Replace(".", string.Empty);
         }
         else if (e.Result.Reason == ResultReason.NoMatch)
         {
