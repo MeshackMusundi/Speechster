@@ -5,6 +5,7 @@ using Speechster.Services;
 using Speechster.Services.Contracts;
 
 var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>()
     .Build();
 
