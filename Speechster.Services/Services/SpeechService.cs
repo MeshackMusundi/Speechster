@@ -78,10 +78,10 @@ public sealed class SpeechService : ISpeechService, IDisposable
                 .Replace(",", string.Empty)
                 .Replace(".", string.Empty);
         }
-        else if (e.Result.Reason == ResultReason.NoMatch)
-        {
-            _logger.LogInformation($"NOMATCH: Speech could not be recognized.");
-        }
+        //else if (e.Result.Reason == ResultReason.NoMatch)
+        //{
+        //    _logger.LogInformation($"NOMATCH: Speech could not be recognized.");
+        //}
     }
 
     private bool CanRespond(string spokenWords)
