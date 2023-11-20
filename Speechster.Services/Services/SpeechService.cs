@@ -18,6 +18,8 @@ public sealed class SpeechService : ISpeechService, IDisposable
     private readonly string assistantName;
     private readonly string[] _keyPhrases;
 
+    private bool isSpeaking;
+
     public SpeechService(
         AudioConfig audioConfig,
         SpeechRecognizer speechRecognizer,
@@ -44,11 +46,14 @@ public sealed class SpeechService : ISpeechService, IDisposable
         };
 
         _speechRecognizer.Recognized += RecognizedSpeechEventHandler;
+        _speechSynthesizer.SynthesisCompleted += SynthesisCompletedEventHandler;
     }
 
     public async Task StartContinousListeningAsync() => await _speechRecognizer.StartContinuousRecognitionAsync();
 
     public async Task StopContinousListeningAsync() => await _speechRecognizer.StopContinuousRecognitionAsync();
+
+    private void SynthesisCompletedEventHandler(object? sender, SpeechSynthesisEventArgs e) => isSpeaking = false;
 
     private async void RecognizedSpeechEventHandler (object? sender, SpeechRecognitionEventArgs e)
     {
@@ -64,10 +69,13 @@ public sealed class SpeechService : ISpeechService, IDisposable
             if (words.StartsWith("stop " + assistantName))
             {
                 await _speechSynthesizer.StopSpeakingAsync();
+                isSpeaking = false;
             }
-            else if (_keyPhrases.Any(phrase => words.StartsWith(phrase)))
-            {
-                Console.WriteLine($"\n>> {spokenWords}");
+            else if (_keyPhrases.Any(phrase => words.StartsWith(phrase)) && !isSpeaking)
+            { 
+                isSpeaking = true;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\n> {spokenWords}");
                 var answer = await _gptService.GetCompletionAsync(spokenWords);
 
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -81,7 +89,7 @@ public sealed class SpeechService : ISpeechService, IDisposable
 
     private async Task SpeakAsync(string text)
     {
-        using SpeechSynthesisResult result = await _speechSynthesizer.SpeakTextAsync(text);
+        using SpeechSynthesisResult result = await _speechSynthesizer.StartSpeakingTextAsync(text);
         Console.WriteLine($"\nSpeech synthesis status: {result.Reason}");
     }
 
