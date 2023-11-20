@@ -15,6 +15,7 @@ public sealed class SpeechService : ISpeechService, IDisposable
     private readonly IGptService _gptService;
     private readonly ILogger<SpeechService> _logger;
     private readonly IOptions<SpeechServiceSettings> _options;
+    private readonly string assistantName;
     private readonly string[] _keyPhrases;
 
     public SpeechService(
@@ -32,20 +33,18 @@ public sealed class SpeechService : ISpeechService, IDisposable
         _gptService = gptService;
         _logger = logger;
         _options = options;
+        assistantName = options.Value.AssistantName;
 
         _keyPhrases = new string[]
         {
-            $"ok {options.Value.AssistantName}",
-            $"hello {options.Value.AssistantName}",
-            $"hi {options.Value.AssistantName}",
-            $"{options.Value.AssistantName}"
+            $"ok {assistantName}",
+            $"hello {assistantName}",
+            $"hi {assistantName}",
+            $"{assistantName}"
         };
 
         _speechRecognizer.Recognized += RecognizedSpeechEventHandler;
     }
-
-    private string previousWords = string.Empty;
-    private bool allowResponse = true;    
 
     public async Task StartContinousListeningAsync() => await _speechRecognizer.StartContinuousRecognitionAsync();
 
@@ -56,12 +55,19 @@ public sealed class SpeechService : ISpeechService, IDisposable
         if (e.Result.Reason == ResultReason.RecognizedSpeech)
         {
             var spokenWords = e.Result.Text;
+            var words = spokenWords
+                .ToLower()
+                .Trim()
+                .Replace(",", string.Empty)
+                .Replace(".", string.Empty);
 
-            if (CanRespond(spokenWords))
+            if (words.StartsWith("stop " + assistantName))
+            {
+                await _speechSynthesizer.StopSpeakingAsync();
+            }
+            else if (_keyPhrases.Any(phrase => words.StartsWith(phrase)))
             {
                 Console.WriteLine($"\n>> {spokenWords}");
-
-                allowResponse = false;
                 var answer = await _gptService.GetCompletionAsync(spokenWords);
 
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -69,29 +75,8 @@ public sealed class SpeechService : ISpeechService, IDisposable
                 Console.ResetColor();
 
                 await SpeakAsync(answer);
-                allowResponse = true;
             }
-
-            previousWords = spokenWords
-                .ToLower()
-                .Trim()
-                .Replace(",", string.Empty)
-                .Replace(".", string.Empty);
         }
-        //else if (e.Result.Reason == ResultReason.NoMatch)
-        //{
-        //    _logger.LogInformation($"NOMATCH: Speech could not be recognized.");
-        //}
-    }
-
-    private bool CanRespond(string spokenWords)
-    {
-        var words = spokenWords.ToLower();
-        var assistantName = _options.Value.AssistantName;
-
-        return allowResponse &&
-            _keyPhrases.Any(kp => kp.Equals(previousWords, StringComparison.OrdinalIgnoreCase)) ||
-            (words.StartsWith(assistantName) && words.Length > assistantName.Length + 3);
     }
 
     private async Task SpeakAsync(string text)
