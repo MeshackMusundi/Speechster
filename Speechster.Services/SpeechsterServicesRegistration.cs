@@ -30,8 +30,8 @@ public static class SpeechsterServicesRegistration
         var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig);
         var speechSynthesizer = new SpeechSynthesizer(speechConfig);
 
-        var kernelBuilder = new KernelBuilder();
-        kernelBuilder.WithAzureChatCompletionService(
+        var kernelBuilder = new KernelBuilder()
+            .WithAzureOpenAIChatCompletionService(
             azureOpenAISettings!.Deployment,
             azureOpenAISettings!.Endpoint,
             azureOpenAISettings!.Key);
